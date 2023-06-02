@@ -1,4 +1,5 @@
 import pygame
+import time
 from piezas import pieza, Figura
 
 pygame.init()
@@ -13,13 +14,28 @@ def colision_ventana(personaje_x, personaje_y, personaje_ancho, personaje_alto, 
             ancho_ventana, alto_ventana = p.figura.dimensiones
 
             # Verificar si el personaje colisiona con la ventana
-            if (personaje_x < x_ventana + ancho_ventana and personaje_x + personaje_ancho > x_ventana and personaje_y < y_ventana + alto_ventana and personaje_y + personaje_alto > y_ventana):
+            if (personaje_x < x_ventana + ancho_ventana 
+                and personaje_x + personaje_ancho > x_ventana 
+                and personaje_y < y_ventana + alto_ventana 
+                and personaje_y + personaje_alto > y_ventana):
                 # El personaje colisionó con la ventana
-                # Cambiar el color de la ventana a azul
-                p.cambiar_color(pygame.Color("blue"))
+
+                # Si la pieza no ha sido atravesada
+                if not p.atravesada:
+                    # Cambiar el color de la ventana a azul
+                    p.cambiar_color(pygame.Color("blue"))
+
+                    # Si el color original de la ventana es amarillo, cambiar su tipo a "pito bloque"
+                    if p.color == pygame.Color("yellow"):
+                        p.tipo = "bloque"
+
+                    # Marcar la pieza como atravesada
+                    p.atravesada = True
             else:
-                # No hay colisión, restaurar el color original de la ventana
-                p.cambiar_color(pygame.Color("gray"))
+                # Restaurar el color original de la ventana si la pieza ha sido atravesada
+                if p.atravesada:
+                    p.cambiar_color(pygame.Color("yellow"))
+                    p.atravesada = False
 
 def abir_cerrar_puertas(piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto, abrir_puerta):
     for p in piezas:
@@ -113,6 +129,7 @@ azul = (0, 0, 255)
 celeste= (0, 191, 255)
 CAFE = (101, 67, 33)
 PLOMO = (169, 169, 169)
+yellow = pygame.Color(255, 255, 0)
 
 
 # Tamaño y posición inicial del personaje
@@ -170,7 +187,14 @@ piezas = [
     pieza("puerta", rojo, Figura("rectangulo", (700, 500), (50, 10))),
     pieza("bloque", PLOMO, Figura("rectangulo", (750, 500), (80, 10))),
 
-    pieza("bloque", PLOMO, Figura("rectangulo", (680, 500), (10, 310)))
+    pieza("bloque", PLOMO, Figura("rectangulo", (680, 500), (10, 310))),
+
+
+    # Agregar un círculo
+    #pieza("ventana", amarillo, Figura("circulo", (600, 200), (10,0))),
+
+    # Agregar un triángulo
+    #pieza("ventana", amarillo, Figura("triangulo", (800, 200), (30, 30))),
        
 ]
 
@@ -228,8 +252,9 @@ while ejecutando:
 
     # Dibujar las piezas
     for p in piezas:
+        if p.tipo == "ventana" and p.color == pygame.Color("yellow"):
+            p.tipo = "bloque"
         p.dibujar(ventana)
-
     # Actualizar la ventana
     pygame.display.flip()
 
