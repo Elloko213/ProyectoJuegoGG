@@ -8,7 +8,8 @@ class Pieza:
         self.tipo = tipo
         self.color = color
         self.figura = figura
-    
+        self.ultimo_tiempo_colision = 0  
+        self.atravesada = False
     def dibujar(self, ventana):
         if self.figura:
             self.figura.dibujar(ventana, self.color)
@@ -40,3 +41,8 @@ def pieza(tipo, color, figura):
     if tipo not in ["bloque","ventana","puerta"]:
         raise ValueError("El tipo de pieza no es válido")
     return Pieza(tipo, color, figura)
+
+
+def cambiar_color(self, color):
+    # Código para cambiar el color de la pieza
+    pass
