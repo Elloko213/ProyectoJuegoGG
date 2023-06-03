@@ -1,10 +1,12 @@
 import pygame
 import time
+import os
 from piezas import pieza, Figura
 
 pygame.init()
 
-abrir_puerta=False
+abrir_puerta = False
+
 
 def colision_ventana(personaje_x, personaje_y, personaje_ancho, personaje_alto, piezas):
     for p in piezas:
@@ -14,10 +16,10 @@ def colision_ventana(personaje_x, personaje_y, personaje_ancho, personaje_alto, 
             ancho_ventana, alto_ventana = p.figura.dimensiones
 
             # Verificar si el personaje colisiona con la ventana
-            if (personaje_x < x_ventana + ancho_ventana 
-                and personaje_x + personaje_ancho > x_ventana 
-                and personaje_y < y_ventana + alto_ventana 
-                and personaje_y + personaje_alto > y_ventana):
+            if (personaje_x < x_ventana + ancho_ventana
+                and personaje_x + personaje_ancho > x_ventana
+                and personaje_y < y_ventana + alto_ventana
+                    and personaje_y + personaje_alto > y_ventana):
                 # El personaje colisionó con la ventana
 
                 # Si la pieza no ha sido atravesada
@@ -37,6 +39,7 @@ def colision_ventana(personaje_x, personaje_y, personaje_ancho, personaje_alto, 
                     p.cambiar_color(pygame.Color("yellow"))
                     p.atravesada = False
 
+
 def abir_cerrar_puertas(piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto, abrir_puerta):
     for p in piezas:
         if p.tipo == "puerta":
@@ -51,8 +54,10 @@ def abir_cerrar_puertas(piezas, personaje_x, personaje_y, personaje_ancho, perso
                     personaje_y + personaje_alto > y_bloque):
 
                 # Calcular las áreas de colisión
-                area_colision_x = min(personaje_x + personaje_ancho, x_bloque + ancho_bloque) - max(personaje_x, x_bloque)
-                area_colision_y = min(personaje_y + personaje_alto, y_bloque + alto_bloque) - max(personaje_y, y_bloque)
+                area_colision_x = min(
+                    personaje_x + personaje_ancho, x_bloque + ancho_bloque) - max(personaje_x, x_bloque)
+                area_colision_y = min(
+                    personaje_y + personaje_alto, y_bloque + alto_bloque) - max(personaje_y, y_bloque)
 
                 # Calcular el área de colisión mínima (el área más pequeña entre el personaje y el bloque)
                 area_colision_minima = min(area_colision_x, area_colision_y)
@@ -79,10 +84,9 @@ def abir_cerrar_puertas(piezas, personaje_x, personaje_y, personaje_ancho, perso
     return personaje_x, personaje_y
 
 
-
 def verificar_piezas_bloque(piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto):
     for p in piezas:
-        if p.tipo == "bloque" :
+        if p.tipo == "bloque":
             # Obtener la posición y dimensiones del bloque
             x_bloque, y_bloque = p.figura.posicion
             ancho_bloque, alto_bloque = p.figura.dimensiones
@@ -93,8 +97,10 @@ def verificar_piezas_bloque(piezas, personaje_x, personaje_y, personaje_ancho, p
                     personaje_y < y_bloque + alto_bloque and
                     personaje_y + personaje_alto > y_bloque):
                 # Calcular las áreas de colisión
-                area_colision_x = min(personaje_x + personaje_ancho, x_bloque + ancho_bloque) - max(personaje_x, x_bloque)
-                area_colision_y = min(personaje_y + personaje_alto, y_bloque + alto_bloque) - max(personaje_y, y_bloque)
+                area_colision_x = min(
+                    personaje_x + personaje_ancho, x_bloque + ancho_bloque) - max(personaje_x, x_bloque)
+                area_colision_y = min(
+                    personaje_y + personaje_alto, y_bloque + alto_bloque) - max(personaje_y, y_bloque)
 
                 # Calcular el área de colisión mínima (el área más pequeña entre el personaje y el bloque)
                 area_colision_minima = min(area_colision_x, area_colision_y)
@@ -113,6 +119,28 @@ def verificar_piezas_bloque(piezas, personaje_x, personaje_y, personaje_ancho, p
 
     return personaje_x, personaje_y
 
+
+def colision_cookie(personaje_x, personaje_y, personaje_ancho, personaje_alto, cookies):
+    for p in cookies:
+        if p.tipo == "ventana":
+            # Obtener la posición y dimensiones de la cookie
+            x_cookie, y_cookie = p.figura.posicion
+            ancho_cookie, alto_cookie = p.figura.dimensiones
+
+            # Verificar si el personaje colisiona con la cookie
+            if (personaje_x < x_cookie + ancho_cookie
+                and personaje_x + personaje_ancho > x_cookie
+                and personaje_y < y_cookie + alto_cookie
+                    and personaje_y + personaje_alto > y_cookie):
+                # El personaje colisionó con la cookie
+                cookies.remove(p)
+            else:
+                # Restaurar el color original de la ventana si la pieza ha sido atravesada
+                if p.atravesada:
+                    p.cambiar_color(pygame.Color("yellow"))
+                    p.atravesada = False
+
+
 # Dimensiones de la ventana
 ancho = 1200
 alto = 900
@@ -126,9 +154,10 @@ blanco = (255, 255, 255)
 rojo = (255, 0, 0)
 verde = (0, 255, 0)
 azul = (0, 0, 255)
-celeste= (0, 191, 255)
+celeste = (0, 191, 255)
 CAFE = (101, 67, 33)
 PLOMO = (169, 169, 169)
+AMARILLO = (255, 255, 0)
 yellow = pygame.Color(255, 255, 0)
 
 
@@ -167,10 +196,10 @@ piezas = [
     pieza("ventana", celeste, Figura("rectangulo", (990, 800), (60, 10))),
 
     pieza("puerta", rojo, Figura("rectangulo", (150, 800), (50, 10))),
-    
 
 
-    
+
+
     pieza("bloque", PLOMO, Figura("rectangulo", (350, 400), (50, 10))),
 
     pieza("puerta", rojo, Figura("rectangulo", (400, 400), (50, 10))),
@@ -191,12 +220,16 @@ piezas = [
 
 
     # Agregar un círculo
-    #pieza("ventana", amarillo, Figura("circulo", (600, 200), (10,0))),
+    # pieza("bloque", AMARILLO, Figura("circulo", (600, 200), (20,0))),
 
     # Agregar un triángulo
-    #pieza("ventana", amarillo, Figura("triangulo", (800, 200), (30, 30))),
-       
+    # pieza("ventana", amarillo, Figura("triangulo", (800, 200), (30, 30))),
 ]
+
+cookies = [
+    pieza("ventana", AMARILLO, Figura("circulo", (600, 200), (20, 0))), 
+    pieza("ventana", AMARILLO, Figura("circulo", (800, 700), (20, 0))), 
+    pieza("ventana", AMARILLO, Figura("circulo", (900, 200), (20, 0))),]
 
 
 # Bucle principal del juego
@@ -233,12 +266,18 @@ while ejecutando:
     # Limpiar la ventana
     ventana.fill(blanco)
     # Verificar colisión con ventanas
-    colision_ventana(personaje_x, personaje_y, personaje_ancho, personaje_alto, piezas)
+    colision_ventana(personaje_x, personaje_y,
+                     personaje_ancho, personaje_alto, piezas)
+    # verify collision with coookie
+    colision_cookie(personaje_x, personaje_y,
+                    personaje_ancho, personaje_alto, cookies)
+
     # Verificar si las piezas bloque impiden el movimiento del personaje
-    personaje_x, personaje_y = verificar_piezas_bloque(piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto)
+    personaje_x, personaje_y = verificar_piezas_bloque(
+        piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto)
    # Verificar si las piezas bloque impiden el movimiento del personaje
-    personaje_x, personaje_y = verificar_piezas_bloque(piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto)
-     
+    personaje_x, personaje_y = verificar_piezas_bloque(
+        piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto)
 
     # Verificar si se presiona la tecla ENTER para abrir la puerta
     if teclas[pygame.K_RETURN]:
@@ -246,18 +285,36 @@ while ejecutando:
     else:
         abrir_puerta = False
 
+    #Verificar si se comieron todas las cookies
+    if len(cookies) == 0:
+        # Dimensiones de la subventana
+        ancho_subventana = 400
+        alto_subventana = 300
+
+        # Crear la subventana
+        subventana = pygame.Surface((ancho_subventana, alto_subventana))
+        subventana.fill((255, 255, 255))
+
+        # Posición de la subventana dentro de la ventana principal
+        posicion_subventana = ((ancho - ancho_subventana) // 2, (alto - alto_subventana) // 2)
+        ventana.blit(subventana, posicion_subventana)
+
     # Dibujar el personaje
-    pygame.draw.rect(ventana, rojo, (personaje_x, personaje_y, personaje_ancho, personaje_alto))
-    personaje_x, personaje_y = abir_cerrar_puertas(piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto, abrir_puerta)
+    pygame.draw.rect(ventana, rojo, (personaje_x, personaje_y,
+                     personaje_ancho, personaje_alto))
+    personaje_x, personaje_y = abir_cerrar_puertas(
+        piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto, abrir_puerta)
 
     # Dibujar las piezas
     for p in piezas:
         if p.tipo == "ventana" and p.color == pygame.Color("yellow"):
             p.tipo = "bloque"
         p.dibujar(ventana)
+
+    for cookie in cookies:
+        cookie.dibujar(ventana)
     # Actualizar la ventana
     pygame.display.flip()
 
 # Salir de Pygame
 pygame.quit()
-

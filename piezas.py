@@ -37,6 +37,7 @@ class Figura:
                       (self.posicion[0], self.posicion[1] - self.dimensiones[1])]
             pygame.draw.polygon(ventana, color, puntos)
 
+
 def pieza(tipo, color, figura):
     if tipo not in ["bloque","ventana","puerta"]:
         raise ValueError("El tipo de pieza no es válido")
