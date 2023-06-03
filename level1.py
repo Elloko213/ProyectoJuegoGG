@@ -227,13 +227,15 @@ piezas = [
 ]
 
 cookies = [
-    pieza("ventana", AMARILLO, Figura("circulo", (600, 200), (20, 0))), 
-    pieza("ventana", AMARILLO, Figura("circulo", (800, 700), (20, 0))), 
+    pieza("ventana", AMARILLO, Figura("circulo", (600, 200), (20, 0))),
+    pieza("ventana", AMARILLO, Figura("circulo", (800, 700), (20, 0))),
     pieza("ventana", AMARILLO, Figura("circulo", (900, 200), (20, 0))),]
 
-
+bg_surf = pygame.image.load('./assets/map2.png').convert()
+bg_surf = pygame.transform.scale(bg_surf, (ancho, alto))
 # Bucle principal del juego
 ejecutando = True
+
 while ejecutando:
     # Manejo de eventos
     for evento in pygame.event.get():
@@ -264,7 +266,8 @@ while ejecutando:
         personaje_y = alto - personaje_alto
 
     # Limpiar la ventana
-    ventana.fill(blanco)
+    ventana.fill(CAFE)
+    ventana.blit(bg_surf, (0, 0))
     # Verificar colisión con ventanas
     colision_ventana(personaje_x, personaje_y,
                      personaje_ancho, personaje_alto, piezas)
@@ -285,19 +288,10 @@ while ejecutando:
     else:
         abrir_puerta = False
 
-    #Verificar si se comieron todas las cookies
+    # Verificar si se comieron todas las cookies
     if len(cookies) == 0:
-        # Dimensiones de la subventana
-        ancho_subventana = 400
-        alto_subventana = 300
+        exec(open("./main.py").read())
 
-        # Crear la subventana
-        subventana = pygame.Surface((ancho_subventana, alto_subventana))
-        subventana.fill((255, 255, 255))
-
-        # Posición de la subventana dentro de la ventana principal
-        posicion_subventana = ((ancho - ancho_subventana) // 2, (alto - alto_subventana) // 2)
-        ventana.blit(subventana, posicion_subventana)
 
     # Dibujar el personaje
     pygame.draw.rect(ventana, rojo, (personaje_x, personaje_y,
@@ -315,6 +309,10 @@ while ejecutando:
         cookie.dibujar(ventana)
     # Actualizar la ventana
     pygame.display.flip()
+
+
+    
+
 
 # Salir de Pygame
 pygame.quit()
