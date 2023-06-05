@@ -1,14 +1,13 @@
-import pygame, sys 
+import pygame
 import time
 from piezas import pieza, Figura
 
 # pygame setup
 pygame.init()
-screen = pygame.display.set_mode((1280,736))
-clock = pygame.time.Clock()
 
-ancho = 1280
-alto = 736
+abrir_puerta = False
+
+
 def colision_screen(personaje_x, personaje_y, personaje_ancho, personaje_alto, piezas):
     for p in piezas:
         if p.tipo == "screen":
@@ -123,7 +122,7 @@ def verificar_piezas_bloque(piezas, personaje_x, personaje_y, personaje_ancho, p
 
 def colision_cookie(personaje_x, personaje_y, personaje_ancho, personaje_alto, cookies):
     for p in cookies:
-        if p.tipo == "screen":
+        if p.tipo == "ventana":
             # Obtener la posición y dimensiones de la cookie
             x_cookie, y_cookie = p.figura.posicion
             ancho_cookie, alto_cookie = p.figura.dimensiones
@@ -136,10 +135,16 @@ def colision_cookie(personaje_x, personaje_y, personaje_ancho, personaje_alto, c
                 # El personaje colisionó con la cookie
                 cookies.remove(p)
             else:
-                # Restaurar el color original de la screen si la pieza ha sido atravesada
+                # Restaurar el color original de la ventana si la pieza ha sido atravesada
                 if p.atravesada:
                     p.cambiar_color(pygame.Color("yellow"))
                     p.atravesada = False
+
+ancho = 1280
+alto = 736
+
+screen = pygame.display.set_mode((1280,736))
+pygame.display.set_caption("Movimiento de Personaje")
 
 # Colores
 negro = (0,0,0)
@@ -231,20 +236,20 @@ cookies = [
     pieza("ventana", AMARILLO, Figura("circulo", (200, 200), (20, 0))),
     pieza("ventana", AMARILLO, Figura("circulo", (200, 650), (20, 0))),]
 
-velocidad = 0.4
-imagen_cookie_original = pygame.image.load('./assets/cookie.png')
 # game setup
 bg_surf = pygame.image.load('./assets/map3.png').convert()
+bg_surf = pygame.transform.scale(bg_surf, (ancho, alto))
+imagen_cookie_original = pygame.image.load('./assets/cookie.png')
 
 # Configurar tiempo límite
 tiempo_limite = 30
 tiempo_inicio = time.time()
 
-while True:
+ejecutando = True
+while ejecutando:
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
-			pygame.quit()
-			sys.exit()
+			ejecutando = False
 
 
 	# Obtener el estado de las teclas
@@ -269,10 +274,6 @@ while True:
 		personaje_y = 0
 	if personaje_y > alto - personaje_alto:
 		personaje_y = alto - personaje_alto
-
-	screen.blit(bg_surf,(0,0))
-	# pathfinder.update()
-
 
     # Limpiar la screen
 	screen.fill(CAFE)
@@ -306,7 +307,8 @@ while True:
 		if tiempo_restante <= 0:
 			mensaje_perdiste = fuente.render("¡Perdiste el juego!", True, negro)
 			screen.blit(mensaje_perdiste, (ancho // 2 - mensaje_perdiste.get_width() // 2, alto // 2 - mensaje_perdiste.get_height() // 2))	
-		pygame.display.flip()	
+		pygame.display.flip()
+        	
 		time.sleep(2)  # Mostrar el mensaje de resultado durante 2 segundos
 		exec(open("./main.py").read())
 		ejecutando = False  # Terminar el programa
@@ -314,7 +316,7 @@ while True:
 	# Mostrar tiempo restante en la screen
 	fuente = pygame.font.Font(None, 36)
 	mensaje_tiempo = fuente.render("Tiempo restante: " + str(tiempo_restante) + " segundos", True, negro)
-	screen.blit(mensaje_tiempo, (10, 10))
+	screen.blit(mensaje_tiempo, (40, 50))
 
 	# Verificar si se comieron todas las cookies
 	if len(cookies) == 0:
@@ -355,8 +357,6 @@ while True:
 	# Actualizar la ventana
 	pygame.display.flip()
 
-    
+# Salir de Pygame
+pygame.quit()
 
-
-	pygame.display.update()
-	clock.tick(60)

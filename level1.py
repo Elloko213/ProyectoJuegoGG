@@ -239,8 +239,8 @@ tiempo_limite = 30
 tiempo_inicio = time.time()
 
 # Bucle principal del juego
-ejecutando = True
 
+ejecutando = True
 while ejecutando:
     # Manejo de eventos
     for evento in pygame.event.get():
