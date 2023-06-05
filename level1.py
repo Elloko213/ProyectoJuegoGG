@@ -233,7 +233,7 @@ cookies = [
 
 bg_surf = pygame.image.load('./assets/map2.png').convert()
 bg_surf = pygame.transform.scale(bg_surf, (ancho, alto))
-
+imagen_cookie_original = pygame.image.load('./assets/cookie.png')
 # Configurar tiempo límite
 tiempo_limite = 30
 tiempo_inicio = time.time()
@@ -346,8 +346,14 @@ while ejecutando:
             p.tipo = "bloque"
         p.dibujar(ventana)
 
-    for cookie in cookies:
-        cookie.dibujar(ventana)
+     for p in cookies:  
+        # Redimensionar la imagen al tamaño de la cookie
+        imagen_cookie = pygame.transform.scale(imagen_cookie_original, (2 * p.figura.dimensiones[0], 2 * p.figura.dimensiones[0]))
+        
+        if p.tipo == "ventana":
+            ventana.blit(imagen_cookie, (p.figura.posicion[0] - p.figura.dimensiones[0], p.figura.posicion[1] - p.figura.dimensiones[0]))
+        else:
+            p.dibujar(ventana)
     # Actualizar la ventana
     pygame.display.flip()
 
