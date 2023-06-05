@@ -346,7 +346,7 @@ while ejecutando:
             p.tipo = "bloque"
         p.dibujar(ventana)
 
-     for p in cookies:  
+    for p in cookies:  
         # Redimensionar la imagen al tamaño de la cookie
         imagen_cookie = pygame.transform.scale(imagen_cookie_original, (2 * p.figura.dimensiones[0], 2 * p.figura.dimensiones[0]))
         

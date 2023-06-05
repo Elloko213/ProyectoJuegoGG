@@ -91,7 +91,6 @@ while True:
 	screen.blit(bg_surf,(0,0))
 	# pathfinder.update()
 
-
 	for p in piezas:
 		if p.tipo == "ventana" and p.color == pygame.Color("yellow"):
 			p.tipo = "bloque"
