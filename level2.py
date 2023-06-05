@@ -166,7 +166,7 @@ personaje_x = 30
 personaje_y = 850
 
 # Velocidad de movimiento del personaje
-velocidad = 0.4
+velocidad = 0.5
 
 #piezas
 piezas = [

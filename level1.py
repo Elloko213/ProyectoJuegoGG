@@ -120,6 +120,29 @@ def verificar_piezas_bloque(piezas, personaje_x, personaje_y, personaje_ancho, p
     return personaje_x, personaje_y
 
 
+def colision_asp(personaje_x, personaje_y, personaje_ancho, personaje_alto, aspiradora):
+    if aspiradora.tipo == "bloque":
+            # Obtener la posición y dimensiones de la ventana
+            x_aspiradora, y_aspiradora = aspiradora.figura.posicion
+            ancho_aspiradora, alto_aspiradora = aspiradora.figura.dimensiones
+
+            # Verificar si el personaje colisiona con la ventana
+            if (personaje_x < x_aspiradora + ancho_aspiradora
+                and personaje_x + personaje_ancho > x_aspiradora
+                and personaje_y < y_aspiradora + alto_aspiradora
+                    and personaje_y + personaje_alto > y_aspiradora):
+                # Mostrar mensaje de resultado
+                ventana.fill(blanco)
+                mensaje_perdiste = fuente.render("¡Perdiste el juego!", True, negro)
+                ventana.blit(mensaje_perdiste, (
+                        ancho // 2 - mensaje_perdiste.get_width() // 2, alto // 2 - mensaje_perdiste.get_height() // 2))
+
+                pygame.display.flip()
+
+                time.sleep(2)  # Mostrar el mensaje de resultado durante 2 segundos
+                exec(open("./main.py").read())
+                ejecutando = False  # Terminar el programa
+
 def colision_cookie(personaje_x, personaje_y, personaje_ancho, personaje_alto, cookies):
     for p in cookies:
         if p.tipo == "ventana":
@@ -231,9 +254,13 @@ cookies = [
     pieza("ventana", AMARILLO, Figura("circulo", (800, 700), (20, 0))),
     pieza("ventana", AMARILLO, Figura("circulo", (900, 200), (20, 0))),]
 
+aspiradora = pieza("bloque", CAFE, Figura("rectangulo", (600, 300), (50, 50)))
+FPS = 0.5
+
 bg_surf = pygame.image.load('./assets/map2.png').convert()
 bg_surf = pygame.transform.scale(bg_surf, (ancho, alto))
 imagen_cookie_original = pygame.image.load('./assets/cookie.png')
+gato = pygame.image.load('./assets/cat2.png')
 # Configurar tiempo límite
 tiempo_limite = 30
 tiempo_inicio = time.time()
@@ -354,7 +381,36 @@ while ejecutando:
             ventana.blit(imagen_cookie, (p.figura.posicion[0] - p.figura.dimensiones[0], p.figura.posicion[1] - p.figura.dimensiones[0]))
         else:
             p.dibujar(ventana)
-    # Actualizar la ventana
+    
+    # gato = pygame.transform.scale(gato, (2 * personaje_alto, 2 * personaje_ancho))
+    # personaje=ventana.blit(gato, (personaje_x - personaje_x, personaje_y - personaje_y))
+    # personaje.dibujar(ventana)
+
+    posicion_aspiradora = list(aspiradora.figura.posicion)
+    # if posicion_aspiradora[0] >= 400 and switch==True:
+    #     posicion_aspiradora[0] -= FPS
+    #     if posicion_aspiradora[0] >= 400:
+    #         switch=False:
+    # else:
+    #     posicion_aspiradora[0] += FPS
+    #     if posicion_aspiradora[0] <= 400:
+    #         switch=True:
+    if posicion_aspiradora[0] == 600:
+        switch_asp = "izq"
+    if posicion_aspiradora[0] == 400:
+        switch_asp = "der"
+
+
+    if switch_asp == "izq":
+        posicion_aspiradora[0] -= FPS
+    if switch_asp == "der":
+        posicion_aspiradora[0] += FPS
+    aspiradora.figura.posicion = tuple(posicion_aspiradora)
+    
+    colision_asp(personaje_x, personaje_y, personaje_ancho, personaje_alto, aspiradora)
+
+    aspiradora.dibujar(ventana)
+    # # Actualizar la ventana
     pygame.display.flip()
 
 # Salir de Pygame
