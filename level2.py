@@ -1,4 +1,5 @@
 import pygame, sys 
+import time
 from piezas import pieza, Figura
 
 # pygame setup
@@ -6,7 +7,142 @@ pygame.init()
 screen = pygame.display.set_mode((1280,736))
 clock = pygame.time.Clock()
 
+ancho = 1280
+alto = 736
+def colision_screen(personaje_x, personaje_y, personaje_ancho, personaje_alto, piezas):
+    for p in piezas:
+        if p.tipo == "screen":
+            # Obtener la posición y dimensiones de la screen
+            x_screen, y_screen = p.figura.posicion
+            ancho_screen, alto_screen = p.figura.dimensiones
+
+            # Verificar si el personaje colisiona con la screen
+            if (personaje_x < x_screen + ancho_screen
+                and personaje_x + personaje_ancho > x_screen
+                and personaje_y < y_screen + alto_screen
+                    and personaje_y + personaje_alto > y_screen):
+                # El personaje colisionó con la screen
+
+                # Si la pieza no ha sido atravesada
+                if not p.atravesada:
+                    # Cambiar el color de la screen a azul
+                    p.cambiar_color(pygame.Color("blue"))
+
+                    # Si el color original de la screen es amarillo, cambiar su tipo a "pito bloque"
+                    if p.color == pygame.Color("yellow"):
+                        p.tipo = "bloque"
+
+                    # Marcar la pieza como atravesada
+                    p.atravesada = True
+            else:
+                # Restaurar el color original de la screen si la pieza ha sido atravesada
+                if p.atravesada:
+                    p.cambiar_color(pygame.Color("yellow"))
+                    p.atravesada = False
+
+
+def abir_cerrar_puertas(piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto, abrir_puerta):
+    for p in piezas:
+        if p.tipo == "puerta":
+            # Obtener la posición y dimensiones del bloque
+            x_bloque, y_bloque = p.figura.posicion
+            ancho_bloque, alto_bloque = p.figura.dimensiones
+
+            # Verificar si el personaje colisiona con el bloque
+            if (personaje_x < x_bloque + ancho_bloque and
+                    personaje_x + personaje_ancho > x_bloque and
+                    personaje_y < y_bloque + alto_bloque and
+                    personaje_y + personaje_alto > y_bloque):
+
+                # Calcular las áreas de colisión
+                area_colision_x = min(
+                    personaje_x + personaje_ancho, x_bloque + ancho_bloque) - max(personaje_x, x_bloque)
+                area_colision_y = min(
+                    personaje_y + personaje_alto, y_bloque + alto_bloque) - max(personaje_y, y_bloque)
+
+                # Calcular el área de colisión mínima (el área más pequeña entre el personaje y el bloque)
+                area_colision_minima = min(area_colision_x, area_colision_y)
+
+                # Actualizar la posición del personaje en función del área de colisión mínima
+                if area_colision_minima == area_colision_x:
+                    if personaje_x < x_bloque:
+                        personaje_x = x_bloque - personaje_ancho
+                    else:
+                        personaje_x = x_bloque + ancho_bloque
+                else:
+                    if personaje_y < y_bloque:
+                        personaje_y = y_bloque - personaje_alto
+                    else:
+                        personaje_y = y_bloque + alto_bloque
+
+                # Cambiar las dimensiones de la puerta en función de ancho y alto
+                if abrir_puerta:
+                    if ancho_bloque > alto_bloque:
+                        p.figura.dimensiones = (10, 50)
+                    else:
+                        p.figura.dimensiones = (50, 10)
+
+    return personaje_x, personaje_y
+
+
+def verificar_piezas_bloque(piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto):
+    for p in piezas:
+        if p.tipo == "bloque":
+            # Obtener la posición y dimensiones del bloque
+            x_bloque, y_bloque = p.figura.posicion
+            ancho_bloque, alto_bloque = p.figura.dimensiones
+
+            # Verificar si el personaje colisiona con el bloque
+            if (personaje_x < x_bloque + ancho_bloque and
+                    personaje_x + personaje_ancho > x_bloque and
+                    personaje_y < y_bloque + alto_bloque and
+                    personaje_y + personaje_alto > y_bloque):
+                # Calcular las áreas de colisión
+                area_colision_x = min(
+                    personaje_x + personaje_ancho, x_bloque + ancho_bloque) - max(personaje_x, x_bloque)
+                area_colision_y = min(
+                    personaje_y + personaje_alto, y_bloque + alto_bloque) - max(personaje_y, y_bloque)
+
+                # Calcular el área de colisión mínima (el área más pequeña entre el personaje y el bloque)
+                area_colision_minima = min(area_colision_x, area_colision_y)
+
+                # Actualizar la posición del personaje en función del área de colisión mínima
+                if area_colision_minima == area_colision_x:
+                    if personaje_x < x_bloque:
+                        personaje_x = x_bloque - personaje_ancho
+                    else:
+                        personaje_x = x_bloque + ancho_bloque
+                else:
+                    if personaje_y < y_bloque:
+                        personaje_y = y_bloque - personaje_alto
+                    else:
+                        personaje_y = y_bloque + alto_bloque
+
+    return personaje_x, personaje_y
+
+
+def colision_cookie(personaje_x, personaje_y, personaje_ancho, personaje_alto, cookies):
+    for p in cookies:
+        if p.tipo == "screen":
+            # Obtener la posición y dimensiones de la cookie
+            x_cookie, y_cookie = p.figura.posicion
+            ancho_cookie, alto_cookie = p.figura.dimensiones
+
+            # Verificar si el personaje colisiona con la cookie
+            if (personaje_x < x_cookie + ancho_cookie
+                and personaje_x + personaje_ancho > x_cookie
+                and personaje_y < y_cookie + alto_cookie
+                    and personaje_y + personaje_alto > y_cookie):
+                # El personaje colisionó con la cookie
+                cookies.remove(p)
+            else:
+                # Restaurar el color original de la screen si la pieza ha sido atravesada
+                if p.atravesada:
+                    p.cambiar_color(pygame.Color("yellow"))
+                    p.atravesada = False
+
 # Colores
+negro = (0,0,0)
 blanco = (255, 255, 255)
 rojo = (255, 0, 0)
 verde = (0, 255, 0)
@@ -17,6 +153,16 @@ PLOMO = (74,74,74)
 AMARILLO = (255, 255, 0)
 BLACK = (0,0,0)
 yellow = pygame.Color(255, 255, 0)
+
+# Tamaño y posición inicial del personaje
+personaje_ancho = 30
+personaje_alto = 30
+personaje_x = 30
+personaje_y = 850
+
+# Velocidad de movimiento del personaje
+velocidad = 0.4
+
 #piezas
 piezas = [
 	#horizontal
@@ -75,12 +221,24 @@ piezas = [
     # pieza("bloque", AMARILLO, Figura("circulo", (600, 200), (20,0))),
 
     # Agregar un triángulo
-    # pieza("ventana", amarillo, Figura("triangulo", (800, 200), (30, 30))),
+    # pieza("screen", amarillo, Figura("triangulo", (800, 200), (30, 30))),
 ]
 
+cookies = [
+    pieza("ventana", AMARILLO, Figura("circulo", (600, 200), (20, 0))),
+    pieza("ventana", AMARILLO, Figura("circulo", (800, 700), (20, 0))),
+    pieza("ventana", AMARILLO, Figura("circulo", (900, 200), (20, 0))),
+    pieza("ventana", AMARILLO, Figura("circulo", (200, 200), (20, 0))),
+    pieza("ventana", AMARILLO, Figura("circulo", (200, 650), (20, 0))),]
 
+velocidad = 0.4
+imagen_cookie_original = pygame.image.load('./assets/cookie.png')
 # game setup
 bg_surf = pygame.image.load('./assets/map3.png').convert()
+
+# Configurar tiempo límite
+tiempo_limite = 30
+tiempo_inicio = time.time()
 
 while True:
 	for event in pygame.event.get():
@@ -88,13 +246,117 @@ while True:
 			pygame.quit()
 			sys.exit()
 
+
+	# Obtener el estado de las teclas
+	teclas = pygame.key.get_pressed()
+
+	# Movimiento del personaje
+	if teclas[pygame.K_UP]:
+		personaje_y -= velocidad
+	if teclas[pygame.K_DOWN]:
+		personaje_y += velocidad
+	if teclas[pygame.K_LEFT]:
+		personaje_x -= velocidad
+	if teclas[pygame.K_RIGHT]:
+		personaje_x += velocidad
+	    
+	# Limitar el personaje dentro de los límites de la screen
+	if personaje_x < 0:
+		personaje_x = 0
+	if personaje_x > ancho - personaje_ancho:
+		personaje_x = ancho - personaje_ancho
+	if personaje_y < 0:
+		personaje_y = 0
+	if personaje_y > alto - personaje_alto:
+		personaje_y = alto - personaje_alto
+
 	screen.blit(bg_surf,(0,0))
 	# pathfinder.update()
 
+
+    # Limpiar la screen
+	screen.fill(CAFE)
+	screen.blit(bg_surf, (0, 0))
+	# Verificar colisión con screens
+	colision_screen(personaje_x, personaje_y,personaje_ancho, personaje_alto, piezas)
+	# verify collision with coookie
+	colision_cookie(personaje_x, personaje_y,personaje_ancho, personaje_alto, cookies)
+
+	# Verificar si las piezas bloque impiden el movimiento del personaje
+	personaje_x, personaje_y = verificar_piezas_bloque(
+	    piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto)
+	# Verificar si las piezas bloque impiden el movimiento del personaje
+	personaje_x, personaje_y = verificar_piezas_bloque(
+	    piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto)
+
+	# Verificar si se presiona la tecla ENTER para abrir la puerta
+	if teclas[pygame.K_RETURN]:
+		abrir_puerta = True
+	else:
+		abrir_puerta = False
+
+	# Verificar el tiempo transcurrido
+	tiempo_actual = time.time()
+	tiempo_transcurrido = int(tiempo_actual - tiempo_inicio)
+	tiempo_restante = tiempo_limite - tiempo_transcurrido
+
+	if tiempo_restante <= 0:
+	    # Mostrar mensaje de resultado
+		screen.fill(blanco)
+		if tiempo_restante <= 0:
+			mensaje_perdiste = fuente.render("¡Perdiste el juego!", True, negro)
+			screen.blit(mensaje_perdiste, (ancho // 2 - mensaje_perdiste.get_width() // 2, alto // 2 - mensaje_perdiste.get_height() // 2))	
+		pygame.display.flip()	
+		time.sleep(2)  # Mostrar el mensaje de resultado durante 2 segundos
+		exec(open("./main.py").read())
+		ejecutando = False  # Terminar el programa
+
+	# Mostrar tiempo restante en la screen
+	fuente = pygame.font.Font(None, 36)
+	mensaje_tiempo = fuente.render("Tiempo restante: " + str(tiempo_restante) + " segundos", True, negro)
+	screen.blit(mensaje_tiempo, (10, 10))
+
+	# Verificar si se comieron todas las cookies
+	if len(cookies) == 0:
+	    # Mostrar mensaje de resultado
+		screen.fill(blanco)
+		if tiempo_restante <= 0:
+			mensaje_perdiste = fuente.render("¡Perdiste el juego!", True, negro)
+			screen.blit(mensaje_perdiste, (ancho // 2 - mensaje_perdiste.get_width() // 2, alto // 2 - mensaje_perdiste.get_height() // 2))
+		else:
+			mensaje_ganaste = fuente.render("¡Has ganado!", True, negro)
+			screen.blit(mensaje_ganaste,
+	                     (ancho // 2 - mensaje_ganaste.get_width() // 2, alto // 2 - mensaje_ganaste.get_height() // 2))	
+		pygame.display.flip()
+
+		time.sleep(2)  # Mostrar el mensaje de resultado durante 2 segundos
+		exec(open("./main.py").read())
+
+
+	# Dibujar el personaje
+	pygame.draw.rect(screen, rojo, (personaje_x, personaje_y,
+	                 personaje_ancho, personaje_alto))
+	personaje_x, personaje_y = abir_cerrar_puertas(
+	    piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto, abrir_puerta)
+
 	for p in piezas:
-		if p.tipo == "ventana" and p.color == pygame.Color("yellow"):
+		if p.tipo == "screen" and p.color == pygame.Color("yellow"):
 			p.tipo = "bloque"
 		p.dibujar(screen)
+
+	for p in cookies:  
+        # Redimensionar la imagen al tamaño de la cookie
+		imagen_cookie = pygame.transform.scale(imagen_cookie_original, (2 * p.figura.dimensiones[0], 2 * p.figura.dimensiones[0]))
+        
+		if p.tipo == "ventana":
+			screen.blit(imagen_cookie, (p.figura.posicion[0] - p.figura.dimensiones[0], p.figura.posicion[1] - p.figura.dimensiones[0]))
+		else:
+			p.dibujar(screen)
+	# Actualizar la ventana
+	pygame.display.flip()
+
+    
+
 
 	pygame.display.update()
 	clock.tick(60)

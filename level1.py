@@ -281,7 +281,7 @@ while ejecutando:
     # Verificar si las piezas bloque impiden el movimiento del personaje
     personaje_x, personaje_y = verificar_piezas_bloque(
         piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto)
-   # Verificar si las piezas bloque impiden el movimiento del personaje
+    # Verificar si las piezas bloque impiden el movimiento del personaje
     personaje_x, personaje_y = verificar_piezas_bloque(
         piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto)
 
