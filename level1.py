@@ -150,6 +150,7 @@ ventana = pygame.display.set_mode((ancho, alto))
 pygame.display.set_caption("Movimiento de Personaje")
 
 # Colores
+negro = (0,0,0)
 blanco = (255, 255, 255)
 rojo = (255, 0, 0)
 verde = (0, 255, 0)
@@ -159,7 +160,6 @@ CAFE = (101, 67, 33)
 PLOMO = (169, 169, 169)
 AMARILLO = (255, 255, 0)
 yellow = pygame.Color(255, 255, 0)
-
 
 # Tamaño y posición inicial del personaje
 personaje_ancho = 30
@@ -233,6 +233,11 @@ cookies = [
 
 bg_surf = pygame.image.load('./assets/map2.png').convert()
 bg_surf = pygame.transform.scale(bg_surf, (ancho, alto))
+
+# Configurar tiempo límite
+tiempo_limite = 30
+tiempo_inicio = time.time()
+
 # Bucle principal del juego
 ejecutando = True
 
@@ -269,11 +274,9 @@ while ejecutando:
     ventana.fill(CAFE)
     ventana.blit(bg_surf, (0, 0))
     # Verificar colisión con ventanas
-    colision_ventana(personaje_x, personaje_y,
-                     personaje_ancho, personaje_alto, piezas)
+    colision_ventana(personaje_x, personaje_y,personaje_ancho, personaje_alto, piezas)
     # verify collision with coookie
-    colision_cookie(personaje_x, personaje_y,
-                    personaje_ancho, personaje_alto, cookies)
+    colision_cookie(personaje_x, personaje_y,personaje_ancho, personaje_alto, cookies)
 
     # Verificar si las piezas bloque impiden el movimiento del personaje
     personaje_x, personaje_y = verificar_piezas_bloque(
@@ -288,8 +291,46 @@ while ejecutando:
     else:
         abrir_puerta = False
 
+    # Verificar el tiempo transcurrido
+    tiempo_actual = time.time()
+    tiempo_transcurrido = int(tiempo_actual - tiempo_inicio)
+    tiempo_restante = tiempo_limite - tiempo_transcurrido
+
+    if tiempo_restante <= 0:
+        # Mostrar mensaje de resultado
+        ventana.fill(blanco)
+        if tiempo_restante <= 0:
+            mensaje_perdiste = fuente.render("¡Perdiste el juego!", True, negro)
+            ventana.blit(mensaje_perdiste, (
+                ancho // 2 - mensaje_perdiste.get_width() // 2, alto // 2 - mensaje_perdiste.get_height() // 2))
+
+        pygame.display.flip()
+
+        time.sleep(2)  # Mostrar el mensaje de resultado durante 2 segundos
+        exec(open("./main.py").read())
+        ejecutando = False  # Terminar el programa
+
+    # Mostrar tiempo restante en la ventana
+    fuente = pygame.font.Font(None, 36)
+    mensaje_tiempo = fuente.render("Tiempo restante: " + str(tiempo_restante) + " segundos", True, negro)
+    ventana.blit(mensaje_tiempo, (10, 10))
+
     # Verificar si se comieron todas las cookies
     if len(cookies) == 0:
+        # Mostrar mensaje de resultado
+        ventana.fill(blanco)
+        if tiempo_restante <= 0:
+            mensaje_perdiste = fuente.render("¡Perdiste el juego!", True, negro)
+            ventana.blit(mensaje_perdiste, (
+            ancho // 2 - mensaje_perdiste.get_width() // 2, alto // 2 - mensaje_perdiste.get_height() // 2))
+        else:
+            mensaje_ganaste = fuente.render("¡Has ganado!", True, negro)
+            ventana.blit(mensaje_ganaste,
+                         (ancho // 2 - mensaje_ganaste.get_width() // 2, alto // 2 - mensaje_ganaste.get_height() // 2))
+
+        pygame.display.flip()
+
+        time.sleep(2)  # Mostrar el mensaje de resultado durante 2 segundos
         exec(open("./main.py").read())
 
 
@@ -309,10 +350,6 @@ while ejecutando:
         cookie.dibujar(ventana)
     # Actualizar la ventana
     pygame.display.flip()
-
-
-    
-
 
 # Salir de Pygame
 pygame.quit()
