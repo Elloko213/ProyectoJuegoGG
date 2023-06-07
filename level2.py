@@ -6,7 +6,28 @@ from piezas import pieza, Figura
 pygame.init()
 
 abrir_puerta = False
+def colision_asp(personaje_x, personaje_y, personaje_ancho, personaje_alto, aspiradora):
+    if aspiradora.tipo == "bloque":
+            # Obtener la posición y dimensiones de la ventana
+            x_aspiradora, y_aspiradora = aspiradora.figura.posicion
+            ancho_aspiradora, alto_aspiradora = aspiradora.figura.dimensiones
 
+            # Verificar si el personaje colisiona con la ventana
+            if (personaje_x < x_aspiradora + ancho_aspiradora
+                and personaje_x + personaje_ancho > x_aspiradora
+                and personaje_y < y_aspiradora + alto_aspiradora
+                    and personaje_y + personaje_alto > y_aspiradora):
+                # Mostrar mensaje de resultado
+                ventana.fill(blanco)
+                mensaje_perdiste = fuente.render("¡Perdiste el juego!", True, negro)
+                ventana.blit(mensaje_perdiste, (
+                        ancho // 2 - mensaje_perdiste.get_width() // 2, alto // 2 - mensaje_perdiste.get_height() // 2))
+
+                pygame.display.flip()
+
+                time.sleep(2)  # Mostrar el mensaje de resultado durante 2 segundos
+                exec(open("./main.py").read())
+                ejecutando = False  # Terminar el programa
 
 def colision_screen(personaje_x, personaje_y, personaje_ancho, personaje_alto, piezas):
     for p in piezas:
@@ -166,11 +187,11 @@ personaje_x = 30
 personaje_y = 850
 
 # Velocidad de movimiento del personaje
-velocidad = 0.5
+velocidad = 0.6
 
 #piezas
 piezas = [
-	#horizontal
+    #horizontal
     pieza("bloque", PLOMO, Figura("rectangulo", (0, 0), (246, 20))),
     pieza("bloque", PLOMO, Figura("rectangulo", (458, 0), (44, 20))),
     pieza("bloque", PLOMO, Figura("rectangulo", (745, 0), (110, 20))),
@@ -188,7 +209,7 @@ piezas = [
     pieza("bloque", PLOMO, Figura("rectangulo", (300, 715), (330, 40))),
     pieza("bloque", PLOMO, Figura("rectangulo", (620, 490), (330, 40))),
     
-	#vertical
+    #vertical
     pieza("bloque", PLOMO, Figura("rectangulo", (0, 0), (20, 85))),
     pieza("bloque", PLOMO, Figura("rectangulo", (0, 235), (20, 235))),
     pieza("bloque", PLOMO, Figura("rectangulo", (0, 615), (20, 235))),
@@ -203,7 +224,7 @@ piezas = [
     pieza("bloque", PLOMO, Figura("rectangulo", (1255, 520), (25, 50))),
     pieza("bloque", PLOMO, Figura("rectangulo", (1255, 650), (25, 80))),
     
-	#windows with block type
+    #windows with block type
     pieza("bloque", celeste, Figura("rectangulo", (255, 0), (195, 20))),
     pieza("bloque", celeste, Figura("rectangulo", (511, 0), (225, 20))),
     pieza("bloque", celeste, Figura("rectangulo", (865, 0), (290, 20))),
@@ -236,126 +257,202 @@ cookies = [
     pieza("ventana", AMARILLO, Figura("circulo", (200, 200), (20, 0))),
     pieza("ventana", AMARILLO, Figura("circulo", (200, 650), (20, 0))),]
 
+aspiradora1 = pieza("bloque", CAFE, Figura("rectangulo", (420, 50), (50, 50)))
+aspiradora2 = pieza("bloque", CAFE, Figura("rectangulo", (550, 580), (50, 50)))
+aspiradora3 = pieza("bloque", CAFE, Figura("rectangulo", (850, 240), (50, 50)))
+aspiradora4 = pieza("bloque", CAFE, Figura("rectangulo", (170, 460), (50, 50)))
+#aspiradora5 = pieza("bloque", CAFE, Figura("rectangulo", (600, 300), (50, 50)))
+FPS = 0.5
 # game setup
 bg_surf = pygame.image.load('./assets/map3.png').convert()
 bg_surf = pygame.transform.scale(bg_surf, (ancho, alto))
 imagen_cookie_original = pygame.image.load('./assets/cookie.png')
-
+#imagen del personaje
+personaje_imagen = pygame.image.load("./assets/cat2.png")
+personaje_imagen = pygame.transform.scale(personaje_imagen, (personaje_ancho, personaje_alto))
 # Configurar tiempo límite
 tiempo_limite = 30
 tiempo_inicio = time.time()
 
 ejecutando = True
 while ejecutando:
-	for event in pygame.event.get():
-		if event.type == pygame.QUIT:
-			ejecutando = False
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            ejecutando = False
 
 
-	# Obtener el estado de las teclas
-	teclas = pygame.key.get_pressed()
+    # Obtener el estado de las teclas
+    teclas = pygame.key.get_pressed()
 
-	# Movimiento del personaje
-	if teclas[pygame.K_UP]:
-		personaje_y -= velocidad
-	if teclas[pygame.K_DOWN]:
-		personaje_y += velocidad
-	if teclas[pygame.K_LEFT]:
-		personaje_x -= velocidad
-	if teclas[pygame.K_RIGHT]:
-		personaje_x += velocidad
-	    
-	# Limitar el personaje dentro de los límites de la screen
-	if personaje_x < 0:
-		personaje_x = 0
-	if personaje_x > ancho - personaje_ancho:
-		personaje_x = ancho - personaje_ancho
-	if personaje_y < 0:
-		personaje_y = 0
-	if personaje_y > alto - personaje_alto:
-		personaje_y = alto - personaje_alto
+    # Movimiento del personaje
+    if teclas[pygame.K_UP]:
+        personaje_y -= velocidad
+    if teclas[pygame.K_DOWN]:
+        personaje_y += velocidad
+    if teclas[pygame.K_LEFT]:
+        personaje_x -= velocidad
+    if teclas[pygame.K_RIGHT]:
+        personaje_x += velocidad
+
+    # Limitar el personaje dentro de los límites de la screen
+    if personaje_x < 0:
+        personaje_x = 0
+    if personaje_x > ancho - personaje_ancho:
+        personaje_x = ancho - personaje_ancho
+    if personaje_y < 0:
+        personaje_y = 0
+    if personaje_y > alto - personaje_alto:
+        personaje_y = alto - personaje_alto
 
     # Limpiar la screen
-	screen.fill(CAFE)
-	screen.blit(bg_surf, (0, 0))
-	# Verificar colisión con screens
-	colision_screen(personaje_x, personaje_y,personaje_ancho, personaje_alto, piezas)
-	# verify collision with coookie
-	colision_cookie(personaje_x, personaje_y,personaje_ancho, personaje_alto, cookies)
+    screen.fill(CAFE)
+    screen.blit(bg_surf, (0, 0))
+    # Verificar colisión con screens
+    colision_screen(personaje_x, personaje_y,personaje_ancho, personaje_alto, piezas)
+    # verify collision with coookie
+    colision_cookie(personaje_x, personaje_y,personaje_ancho, personaje_alto, cookies)
 
-	# Verificar si las piezas bloque impiden el movimiento del personaje
-	personaje_x, personaje_y = verificar_piezas_bloque(
-	    piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto)
-	# Verificar si las piezas bloque impiden el movimiento del personaje
-	personaje_x, personaje_y = verificar_piezas_bloque(
-	    piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto)
+    # Verificar si las piezas bloque impiden el movimiento del personaje
+    personaje_x, personaje_y = verificar_piezas_bloque(
+        piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto)
+    # Verificar si las piezas bloque impiden el movimiento del personaje
+    personaje_x, personaje_y = verificar_piezas_bloque(
+        piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto)
 
-	# Verificar si se presiona la tecla ENTER para abrir la puerta
-	if teclas[pygame.K_RETURN]:
-		abrir_puerta = True
-	else:
-		abrir_puerta = False
+    # Verificar si se presiona la tecla ENTER para abrir la puerta
+    if teclas[pygame.K_RETURN]:
+        abrir_puerta = True
+    else:
+        abrir_puerta = False
 
-	# Verificar el tiempo transcurrido
-	tiempo_actual = time.time()
-	tiempo_transcurrido = int(tiempo_actual - tiempo_inicio)
-	tiempo_restante = tiempo_limite - tiempo_transcurrido
+    # Verificar el tiempo transcurrido
+    tiempo_actual = time.time()
+    tiempo_transcurrido = int(tiempo_actual - tiempo_inicio)
+    tiempo_restante = tiempo_limite - tiempo_transcurrido
 
-	if tiempo_restante <= 0:
-	    # Mostrar mensaje de resultado
-		screen.fill(blanco)
-		if tiempo_restante <= 0:
-			mensaje_perdiste = fuente.render("¡Perdiste el juego!", True, negro)
-			screen.blit(mensaje_perdiste, (ancho // 2 - mensaje_perdiste.get_width() // 2, alto // 2 - mensaje_perdiste.get_height() // 2))	
-		pygame.display.flip()
-        	
-		time.sleep(2)  # Mostrar el mensaje de resultado durante 2 segundos
-		exec(open("./main.py").read())
-		ejecutando = False  # Terminar el programa
+    if tiempo_restante <= 0:
+        # Mostrar mensaje de resultado
+        screen.fill(blanco)
+        if tiempo_restante <= 0:
+            mensaje_perdiste = fuente.render("¡Perdiste el juego!", True, negro)
+            screen.blit(mensaje_perdiste, (ancho // 2 - mensaje_perdiste.get_width() // 2, alto // 2 - mensaje_perdiste.get_height() // 2))
+        pygame.display.flip()
 
-	# Mostrar tiempo restante en la screen
-	fuente = pygame.font.Font(None, 36)
-	mensaje_tiempo = fuente.render("Tiempo restante: " + str(tiempo_restante) + " segundos", True, negro)
-	screen.blit(mensaje_tiempo, (40, 50))
+        time.sleep(2)  # Mostrar el mensaje de resultado durante 2 segundos
+        exec(open("./main.py").read())
+        ejecutando = False  # Terminar el programa
 
-	# Verificar si se comieron todas las cookies
-	if len(cookies) == 0:
-	    # Mostrar mensaje de resultado
-		screen.fill(blanco)
-		if tiempo_restante <= 0:
-			mensaje_perdiste = fuente.render("¡Perdiste el juego!", True, negro)
-			screen.blit(mensaje_perdiste, (ancho // 2 - mensaje_perdiste.get_width() // 2, alto // 2 - mensaje_perdiste.get_height() // 2))
-		else:
-			mensaje_ganaste = fuente.render("¡Has ganado!", True, negro)
-			screen.blit(mensaje_ganaste,
-	                     (ancho // 2 - mensaje_ganaste.get_width() // 2, alto // 2 - mensaje_ganaste.get_height() // 2))	
-		pygame.display.flip()
+    # Mostrar tiempo restante en la screen
+    fuente = pygame.font.Font(None, 36)
+    mensaje_tiempo = fuente.render("Tiempo restante: " + str(tiempo_restante) + " segundos", True, negro)
+    screen.blit(mensaje_tiempo, (40, 50))
 
-		time.sleep(2)  # Mostrar el mensaje de resultado durante 2 segundos
-		exec(open("./main.py").read())
+    # Verificar si se comieron todas las cookies
+    if len(cookies) == 0:
+        # Mostrar mensaje de resultado
+        screen.fill(blanco)
+        if tiempo_restante <= 0:
+            mensaje_perdiste = fuente.render("¡Perdiste el juego!", True, negro)
+            screen.blit(mensaje_perdiste, (ancho // 2 - mensaje_perdiste.get_width() // 2, alto // 2 - mensaje_perdiste.get_height() // 2))
+        else:
+            mensaje_ganaste = fuente.render("¡Has ganado!", True, negro)
+            screen.blit(mensaje_ganaste,
+                         (ancho // 2 - mensaje_ganaste.get_width() // 2, alto // 2 - mensaje_ganaste.get_height() // 2))
+        pygame.display.flip()
+
+        time.sleep(2)  # Mostrar el mensaje de resultado durante 2 segundos
+        exec(open("./main.py").read())
 
 
-	# Dibujar el personaje
-	pygame.draw.rect(screen, rojo, (personaje_x, personaje_y,
-	                 personaje_ancho, personaje_alto))
-	personaje_x, personaje_y = abir_cerrar_puertas(
-	    piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto, abrir_puerta)
+    # Dibujar el personaje
+    #pygame.draw.rect(screen, rojo, (personaje_x, personaje_y,personaje_ancho, personaje_alto))
 
-	for p in piezas:
-		if p.tipo == "screen" and p.color == pygame.Color("yellow"):
-			p.tipo = "bloque"
-		p.dibujar(screen)
+    screen.blit(personaje_imagen,(personaje_x,personaje_y))
+    #screen.blit(personaje_imagen2, (personaje_x, personaje_y))
+    personaje_x, personaje_y = abir_cerrar_puertas(piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto, abrir_puerta)
 
-	for p in cookies:  
+    for p in piezas:
+        if p.tipo == "screen" and p.color == pygame.Color("yellow"):
+            p.tipo = "bloque"
+        p.dibujar(screen)
+
+    for p in cookies:
         # Redimensionar la imagen al tamaño de la cookie
-		imagen_cookie = pygame.transform.scale(imagen_cookie_original, (2 * p.figura.dimensiones[0], 2 * p.figura.dimensiones[0]))
+        imagen_cookie = pygame.transform.scale(imagen_cookie_original, (2 * p.figura.dimensiones[0], 2 * p.figura.dimensiones[0]))
         
-		if p.tipo == "ventana":
-			screen.blit(imagen_cookie, (p.figura.posicion[0] - p.figura.dimensiones[0], p.figura.posicion[1] - p.figura.dimensiones[0]))
-		else:
-			p.dibujar(screen)
-	# Actualizar la ventana
-	pygame.display.flip()
+        if p.tipo == "ventana":
+            screen.blit(imagen_cookie, (p.figura.posicion[0] - p.figura.dimensiones[0], p.figura.posicion[1] - p.figura.dimensiones[0]))
+        else:
+            p.dibujar(screen)
+
+    posicion_aspiradora1 = list(aspiradora1.figura.posicion)
+    posicion_aspiradora2 = list(aspiradora2.figura.posicion)
+    posicion_aspiradora3 = list(aspiradora3.figura.posicion)
+    posicion_aspiradora4 = list(aspiradora4.figura.posicion)
+
+    if posicion_aspiradora1[1] == 640:
+        switch_asp1 = "izq1"
+    if posicion_aspiradora1[1] == 50:
+        switch_asp1 = "der1"
+
+
+    if switch_asp1 == "izq1":
+        posicion_aspiradora1[1] -= FPS
+    if switch_asp1 == "der1":
+        posicion_aspiradora1[1] += FPS
+    aspiradora1.figura.posicion = tuple(posicion_aspiradora1)
+
+
+    if posicion_aspiradora2[0] == 830:
+        switch_asp2 = "izq2"
+    if posicion_aspiradora2[0] == 550:
+        switch_asp2 = "der2"
+
+
+    if switch_asp2 == "izq2":
+        posicion_aspiradora2[0] -= FPS
+    if switch_asp2 == "der2":
+        posicion_aspiradora2[0] += FPS
+    aspiradora2.figura.posicion = tuple(posicion_aspiradora2)
+
+
+    if posicion_aspiradora3[0] == 1050:
+        switch_asp3 = "izq3"
+    if posicion_aspiradora3[0] == 850:
+        switch_asp3 = "der3"
+
+
+    if switch_asp3 == "izq3":
+        posicion_aspiradora3[0] -= FPS
+    if switch_asp3 == "der3":
+        posicion_aspiradora3[0] += FPS
+    aspiradora3.figura.posicion = tuple(posicion_aspiradora3)
+
+
+    if posicion_aspiradora4[0] == 350:
+        switch_asp4 = "izq4"
+    if posicion_aspiradora4[0] == 170:
+        switch_asp4 = "der4"
+
+
+    if switch_asp4 == "izq4":
+        posicion_aspiradora4[0] -= FPS
+    if switch_asp4 == "der4":
+        posicion_aspiradora4[0] += FPS
+    aspiradora4.figura.posicion = tuple(posicion_aspiradora4)
+
+    colision_asp(personaje_x, personaje_y, personaje_ancho, personaje_alto, aspiradora1)
+    colision_asp(personaje_x, personaje_y, personaje_ancho, personaje_alto, aspiradora2)
+    colision_asp(personaje_x, personaje_y, personaje_ancho, personaje_alto, aspiradora3)
+    colision_asp(personaje_x, personaje_y, personaje_ancho, personaje_alto, aspiradora4)
+
+
+    aspiradora1.dibujar(screen)
+    aspiradora2.dibujar(screen)
+    aspiradora3.dibujar(screen)
+    aspiradora4.dibujar(screen)
+
+    pygame.display.flip()
 
 # Salir de Pygame
 pygame.quit()
