@@ -191,7 +191,7 @@ personaje_x = 30
 personaje_y = 850
 
 # Velocidad de movimiento del personaje
-velocidad = 0.4
+velocidad = 0.6
 
 # Crear una lista de piezas
 piezas = [
@@ -254,13 +254,20 @@ cookies = [
     pieza("ventana", AMARILLO, Figura("circulo", (800, 700), (20, 0))),
     pieza("ventana", AMARILLO, Figura("circulo", (900, 200), (20, 0))),]
 
-aspiradora = pieza("bloque", CAFE, Figura("rectangulo", (600, 300), (50, 50)))
+aspiradora1 = pieza("bloque", CAFE, Figura("rectangulo", (600, 300), (50, 50)))
+aspiradora2 = pieza("bloque", CAFE, Figura("rectangulo", (700, 300), (50, 50)))
+aspiradora3 = pieza("bloque", CAFE, Figura("rectangulo", (700, 740), (50, 50)))
+aspiradora4 = pieza("bloque", CAFE, Figura("rectangulo", (140, 435), (50, 50)))
+#aspiradora5 = pieza("bloque", CAFE, Figura("rectangulo", (600, 300), (50, 50)))
 FPS = 0.5
 
 bg_surf = pygame.image.load('./assets/map2.png').convert()
 bg_surf = pygame.transform.scale(bg_surf, (ancho, alto))
 imagen_cookie_original = pygame.image.load('./assets/cookie.png')
-gato = pygame.image.load('./assets/cat2.png')
+
+#imagen del personaje
+personaje_imagen = pygame.image.load("./assets/cat2.png")
+personaje_imagen = pygame.transform.scale(personaje_imagen, (personaje_ancho, personaje_alto))
 # Configurar tiempo límite
 tiempo_limite = 30
 tiempo_inicio = time.time()
@@ -300,17 +307,16 @@ while ejecutando:
     # Limpiar la ventana
     ventana.fill(CAFE)
     ventana.blit(bg_surf, (0, 0))
+
     # Verificar colisión con ventanas
     colision_ventana(personaje_x, personaje_y,personaje_ancho, personaje_alto, piezas)
     # verify collision with coookie
     colision_cookie(personaje_x, personaje_y,personaje_ancho, personaje_alto, cookies)
 
     # Verificar si las piezas bloque impiden el movimiento del personaje
-    personaje_x, personaje_y = verificar_piezas_bloque(
-        piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto)
+    personaje_x, personaje_y = verificar_piezas_bloque( piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto)
     # Verificar si las piezas bloque impiden el movimiento del personaje
-    personaje_x, personaje_y = verificar_piezas_bloque(
-        piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto)
+    personaje_x, personaje_y = verificar_piezas_bloque(piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto)
 
     # Verificar si se presiona la tecla ENTER para abrir la puerta
     if teclas[pygame.K_RETURN]:
@@ -362,10 +368,9 @@ while ejecutando:
 
 
     # Dibujar el personaje
-    pygame.draw.rect(ventana, rojo, (personaje_x, personaje_y,
-                     personaje_ancho, personaje_alto))
-    personaje_x, personaje_y = abir_cerrar_puertas(
-        piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto, abrir_puerta)
+    #pygame.draw.rect(ventana, rojo, (personaje_x, personaje_y,personaje_ancho, personaje_alto))
+    ventana.blit(personaje_imagen, (personaje_x, personaje_y))
+    personaje_x, personaje_y = abir_cerrar_puertas(piezas, personaje_x, personaje_y, personaje_ancho, personaje_alto, abrir_puerta)
 
     # Dibujar las piezas
     for p in piezas:
@@ -381,35 +386,74 @@ while ejecutando:
             ventana.blit(imagen_cookie, (p.figura.posicion[0] - p.figura.dimensiones[0], p.figura.posicion[1] - p.figura.dimensiones[0]))
         else:
             p.dibujar(ventana)
-    
-    # gato = pygame.transform.scale(gato, (2 * personaje_alto, 2 * personaje_ancho))
-    # personaje=ventana.blit(gato, (personaje_x - personaje_x, personaje_y - personaje_y))
-    # personaje.dibujar(ventana)
-
-    posicion_aspiradora = list(aspiradora.figura.posicion)
-    # if posicion_aspiradora[0] >= 400 and switch==True:
-    #     posicion_aspiradora[0] -= FPS
-    #     if posicion_aspiradora[0] >= 400:
-    #         switch=False:
-    # else:
-    #     posicion_aspiradora[0] += FPS
-    #     if posicion_aspiradora[0] <= 400:
-    #         switch=True:
-    if posicion_aspiradora[0] == 600:
-        switch_asp = "izq"
-    if posicion_aspiradora[0] == 400:
-        switch_asp = "der"
 
 
-    if switch_asp == "izq":
-        posicion_aspiradora[0] -= FPS
-    if switch_asp == "der":
-        posicion_aspiradora[0] += FPS
-    aspiradora.figura.posicion = tuple(posicion_aspiradora)
-    
-    colision_asp(personaje_x, personaje_y, personaje_ancho, personaje_alto, aspiradora)
+    posicion_aspiradora1 = list(aspiradora1.figura.posicion)
+    posicion_aspiradora2 = list(aspiradora2.figura.posicion)
+    posicion_aspiradora3 = list(aspiradora3.figura.posicion)
+    posicion_aspiradora4 = list(aspiradora4.figura.posicion)
 
-    aspiradora.dibujar(ventana)
+    if posicion_aspiradora1[0] == 600:
+        switch_asp1 = "izq1"
+    if posicion_aspiradora1[0] == 400:
+        switch_asp1 = "der1"
+
+
+    if switch_asp1 == "izq1":
+        posicion_aspiradora1[0] -= FPS
+    if switch_asp1 == "der1":
+        posicion_aspiradora1[0] += FPS
+    aspiradora1.figura.posicion = tuple(posicion_aspiradora1)
+
+
+    if posicion_aspiradora2[0] == 1000:
+        switch_asp2 = "izq2"
+    if posicion_aspiradora2[0] == 700:
+        switch_asp2 = "der2"
+
+
+    if switch_asp2 == "izq2":
+        posicion_aspiradora2[0] -= FPS
+    if switch_asp2 == "der2":
+        posicion_aspiradora2[0] += FPS
+    aspiradora2.figura.posicion = tuple(posicion_aspiradora2)
+
+
+    if posicion_aspiradora3[0] == 1050:
+        switch_asp3 = "izq3"
+    if posicion_aspiradora3[0] == 700:
+        switch_asp3 = "der3"
+
+
+    if switch_asp3 == "izq3":
+        posicion_aspiradora3[0] -= FPS
+    if switch_asp3 == "der3":
+        posicion_aspiradora3[0] += FPS
+    aspiradora3.figura.posicion = tuple(posicion_aspiradora3)
+
+
+    if posicion_aspiradora4[0] == 750:
+        switch_asp4 = "izq4"
+    if posicion_aspiradora4[0] == 140:
+        switch_asp4 = "der4"
+
+
+    if switch_asp4 == "izq4":
+        posicion_aspiradora4[0] -= FPS
+    if switch_asp4 == "der4":
+        posicion_aspiradora4[0] += FPS
+    aspiradora4.figura.posicion = tuple(posicion_aspiradora4)
+
+
+    colision_asp(personaje_x, personaje_y, personaje_ancho, personaje_alto, aspiradora1)
+    colision_asp(personaje_x, personaje_y, personaje_ancho, personaje_alto, aspiradora2)
+    colision_asp(personaje_x, personaje_y, personaje_ancho, personaje_alto, aspiradora3)
+    colision_asp(personaje_x, personaje_y, personaje_ancho, personaje_alto, aspiradora4)
+
+    aspiradora1.dibujar(ventana)
+    aspiradora2.dibujar(ventana)
+    aspiradora3.dibujar(ventana)
+    aspiradora4.dibujar(ventana)
     # # Actualizar la ventana
     pygame.display.flip()
 
