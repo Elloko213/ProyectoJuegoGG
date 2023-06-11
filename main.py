@@ -2,7 +2,6 @@ import pygame, sys
 from button import Button
 import pygame, sys 
 
-
 pygame.init()
 
 SCREEN = pygame.display.set_mode((1280, 720))
@@ -74,18 +73,20 @@ def main_menu():
         MENU_TEXT = get_font(100).render("MAIN MENU", True, "#b68f40")
         MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
 
-        PLAY_0_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 210), 
-                            text_input="LEVEL 1", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
-        PLAY_1_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 360), 
-                            text_input="LEVEL 2", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
-        PLAY_2_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 510), 
-                            text_input="LEVEL 3", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
-        QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(640, 660), 
-                            text_input="QUIT", font=get_font(55), base_color="#d7fcd4", hovering_color="White")
+        PLAY_0_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 200), 
+                            text_input="LEVEL 1", font=get_font(39), base_color="#d7fcd4", hovering_color="White")
+        PLAY_1_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 320), 
+                            text_input="LEVEL 2", font=get_font(39), base_color="#d7fcd4", hovering_color="White")
+        PLAY_2_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 440), 
+                            text_input="LEVEL 3", font=get_font(39), base_color="#d7fcd4", hovering_color="White")
+        EXTRA = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 560), 
+                            text_input="Extra", font=get_font(39), base_color="#d7fcd4", hovering_color="White")
+        QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(640, 680), 
+                            text_input="QUIT", font=get_font(39), base_color="#d7fcd4", hovering_color="White")
 
         SCREEN.blit(MENU_TEXT, MENU_RECT)
 
-        for button in [PLAY_0_BUTTON, PLAY_1_BUTTON, PLAY_2_BUTTON, QUIT_BUTTON]:
+        for button in [PLAY_0_BUTTON, PLAY_1_BUTTON, PLAY_2_BUTTON, EXTRA, QUIT_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
             button.update(SCREEN)
         
@@ -100,6 +101,8 @@ def main_menu():
                     exec(open("./level1.py").read())
                 if PLAY_2_BUTTON.checkForInput(MENU_MOUSE_POS):
                     exec(open("./level2.py").read())
+                if EXTRA.checkForInput(MENU_MOUSE_POS):
+                    import main_maze
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.quit()
                     sys.exit()
