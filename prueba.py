@@ -501,7 +501,8 @@ while ejecutando:
 
 
     # Dibujar el personaje
-    pygame.draw.rect(ventana, rojo, (personaje_x, personaje_y,personaje_ancho, personaje_alto))
+    #pygame.draw.rect(ventana, rojo, (personaje_x, personaje_y,personaje_ancho, personaje_alto))
+    ventana.blit(personaje_imagen, (personaje_x, personaje_y))
     #ventana.blit(personaje_imagen, (personaje_x, personaje_y))
     # Dibujar el enemigo
     enemigo.dibujar(ventana)

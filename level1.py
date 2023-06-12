@@ -247,7 +247,7 @@ personaje_x = 30
 personaje_y = 850
 
 # Velocidad de movimiento del personaje
-velocidad = 2
+velocidad = 3
 
 # Crear una lista de piezas
 piezas = [

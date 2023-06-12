@@ -145,12 +145,13 @@ while ejecutando:
         ejecutando = False  # Terminar el programa
 
     ventana.fill(blanco)
-    pygame.draw.rect(ventana, negro, (posicion_x_rectangulo, posicion_y_rectangulo, ancho_rectangulo, alto_rectangulo))
+    #pygame.draw.rect(ventana, negro, (posicion_x_rectangulo, posicion_y_rectangulo, ancho_rectangulo, alto_rectangulo))
+    ventana.blit(personaje_imagen, (posicion_x_rectangulo, posicion_y_rectangulo))
     pygame.draw.rect(ventana, negro, (posicion_x_bloque1, posicion_y_bloque1, ancho_bloque1, alto_bloque1))
     pygame.draw.rect(ventana, negro, (posicion_x_bloque2, posicion_y_bloque2, ancho_bloque2, alto_bloque2))
     pygame.draw.rect(ventana, negro, (posicion_x_bloque3, posicion_y_bloque3, ancho_bloque3, alto_bloque3))
     pygame.draw.circle(ventana, amarillo, (posicion_x_circulo, posicion_y_circulo), radio_circulo)
-    
+
 
     # Mostrar tiempo restante en la ventana
     fuente = pygame.font.Font(None, 36)
@@ -167,7 +168,7 @@ if tiempo_restante <= 0:
 else:
     mensaje_ganaste = fuente.render("¡Has ganado!", True, negro)
     ventana.blit(mensaje_ganaste, (ancho // 2 - mensaje_ganaste.get_width() // 2, alto // 2 - mensaje_ganaste.get_height() // 2))
-ventana.blit(personaje_imagen, (posicion_x_rectangulo, posicion_y_rectangulo))
+
 pygame.display.flip()
 
 time.sleep(2)  # Mostrar el mensaje de resultado durante 2 segundos
