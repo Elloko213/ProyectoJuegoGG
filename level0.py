@@ -49,7 +49,10 @@ radio_circulo = 50
 # Configurar tiempo límite
 tiempo_limite = 30
 tiempo_inicio = time.time()
-gato=pygame.image.load('./assets/cat2.png')
+
+#imagen del personaje
+personaje_imagen = pygame.image.load("./assets/cat2.png")
+personaje_imagen = pygame.transform.scale(personaje_imagen, (ancho_rectangulo, alto_rectangulo))
 ejecutando = True
 while ejecutando:
     for evento in pygame.event.get():
@@ -157,14 +160,14 @@ while ejecutando:
     pygame.display.flip()
 
 # Mostrar mensaje de resultado
-ventana.fill(blanco)
+    ventana.fill(blanco)
 if tiempo_restante <= 0:
     mensaje_perdiste = fuente.render("¡Perdiste el juego!", True, negro)
     ventana.blit(mensaje_perdiste, (ancho // 2 - mensaje_perdiste.get_width() // 2, alto // 2 - mensaje_perdiste.get_height() // 2))
 else:
     mensaje_ganaste = fuente.render("¡Has ganado!", True, negro)
     ventana.blit(mensaje_ganaste, (ancho // 2 - mensaje_ganaste.get_width() // 2, alto // 2 - mensaje_ganaste.get_height() // 2))
-gato.pygame.draw(ventana)
+ventana.blit(personaje_imagen, (posicion_x_rectangulo, posicion_y_rectangulo))
 pygame.display.flip()
 
 time.sleep(2)  # Mostrar el mensaje de resultado durante 2 segundos

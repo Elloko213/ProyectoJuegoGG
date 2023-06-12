@@ -234,7 +234,7 @@ personaje_x = 600
 personaje_y = 850
 
 # Velocidad de movimiento del personaje
-velocidad = 0.9
+velocidad = 2
 
 
 camino=[
@@ -499,8 +499,8 @@ while ejecutando:
 
 
     # Dibujar el personaje
-    #pygame.draw.rect(ventana, rojo, (personaje_x, personaje_y,personaje_ancho, personaje_alto))
-    ventana.blit(personaje_imagen, (personaje_x, personaje_y))
+    pygame.draw.rect(ventana, rojo, (personaje_x, personaje_y,personaje_ancho, personaje_alto))
+    #ventana.blit(personaje_imagen, (personaje_x, personaje_y))
     # Dibujar el enemigo
     enemigo.dibujar(ventana)
 
