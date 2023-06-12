@@ -59,6 +59,13 @@ for galleta in configuracion_optima:
     Beneficio+=galleta.beneficio
 print(pesomaximo)
 print(Beneficio)
+# Resolver el problema de la mochila utilizando programación dinámica
+
+
+# Imprimir la tabla
+for row in mochila.tabla:
+    print(row)
+
 pygame.init()
 
 abrir_puerta = False
@@ -325,7 +332,7 @@ aspiradora_image = pygame.image.load('./assets/aspiradora2.png')
 personaje_imagen = pygame.image.load("./assets/cat2.png")
 personaje_imagen = pygame.transform.scale(personaje_imagen, (personaje_ancho, personaje_alto))
 # Configurar tiempo límite
-tiempo_limite = 35
+tiempo_limite = 45
 tiempo_inicio = time.time()
 
 # Bucle principal del juego
@@ -418,12 +425,11 @@ while ejecutando:
             ventana.blit(mensaje_perdiste, (
             ancho // 2 - mensaje_perdiste.get_width() // 2, alto // 2 - mensaje_perdiste.get_height() // 2))
         else:
-            mensaje_perdiste = fuente.render(f"Beneficio total: {Beneficio}", True, negro)
+            mensaje_0 = fuente.render(f"Peso máximo de la mochila: {pesomaximo}", True, negro)
+            ventana.blit(mensaje_0, (ancho // 2 - mensaje_0.get_width() // 2, alto // 3 - mensaje_0.get_height() // 3))
+            mensaje_1 = fuente.render(f"Beneficio total: {Beneficio}", True, negro)
+            ventana.blit(mensaje_1, (ancho // 2 - mensaje_1.get_width() // 2, alto // 2 - mensaje_1.get_height() // 2))
 
-            ventana.blit(mensaje_perdiste, (
-                ancho // 2 - mensaje_perdiste.get_width() // 2, alto // 2 - mensaje_perdiste.get_height() // 2))
-            mensaje_ganaste = fuente.render("¡Has ganado!", True, negro)
-            #ventana.blit(mensaje_ganaste,(ancho // 2 - mensaje_ganaste.get_width() // 2, alto // 2 - mensaje_ganaste.get_height() // 2))
 
         pygame.display.flip()
 
