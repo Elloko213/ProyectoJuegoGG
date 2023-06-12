@@ -160,7 +160,9 @@ while ejecutando:
     inicio_enemigo = (enemigo.figura.posicion[0], enemigo.figura.posicion[1])
     objetivo_enemigo = (cookies[objetivo_actual].figura.posicion[0], cookies[objetivo_actual].figura.posicion[1])
     camino_enemigo = buscar_camino(inicio_enemigo, objetivo_enemigo, obstaculos)
-    
+    # Limpiar la ventana
+    ventana.fill(CAFE)
+    ventana.blit(bg_surf, (0, 0))
     if camino_enemigo is not None:
         # Mover el enemigo por el camino óptimo
         siguiente_paso = camino_enemigo[1]
@@ -173,7 +175,8 @@ while ejecutando:
 
     # Limpiar la ventana
     ventana.fill(blanco)
-
+    ventana.fill(CAFE)
+    ventana.blit(bg_surf, (0, 0))
     # Dibujar el camino
     for p in obstaculos:
         p.dibujar(ventana)

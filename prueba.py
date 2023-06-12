@@ -234,7 +234,7 @@ personaje_x = 600
 personaje_y = 850
 
 # Velocidad de movimiento del personaje
-velocidad = 0.9
+velocidad = 2
 
 
 camino=[
@@ -336,6 +336,8 @@ velocidad_enemigo=0.5
 bg_surf = pygame.image.load('./assets/map2.png').convert()
 bg_surf = pygame.transform.scale(bg_surf, (ancho, alto))
 imagen_cookie_original = pygame.image.load('./assets/cookie.png')
+
+enemigo_image = pygame.image.load('./assets/aspiradora2.png')
 
 #imagen del personaje
 personaje_imagen = pygame.image.load("./assets/cat2.png")
@@ -501,6 +503,7 @@ while ejecutando:
     # Dibujar el personaje
     #pygame.draw.rect(ventana, rojo, (personaje_x, personaje_y,personaje_ancho, personaje_alto))
     ventana.blit(personaje_imagen, (personaje_x, personaje_y))
+    #ventana.blit(personaje_imagen, (personaje_x, personaje_y))
     # Dibujar el enemigo
     enemigo.dibujar(ventana)
 
@@ -519,8 +522,10 @@ while ejecutando:
        
     colision_asp(personaje_x, personaje_y, personaje_ancho, personaje_alto, enemigo)
     colision_asp(personaje_x, personaje_y, personaje_ancho, personaje_alto, enemigo1)
-    enemigo.dibujar(ventana)
-    enemigo1.dibujar(ventana)
+    ventana.blit(enemigo_image, enemigo.figura.posicion)
+    ventana.blit(enemigo_image, enemigo1.figura.posicion)
+    #enemigo.dibujar(ventana)
+    #enemigo1.dibujar(ventana)
     pygame.display.flip()
 
 # Salir de Pygame

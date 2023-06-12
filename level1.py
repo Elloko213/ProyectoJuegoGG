@@ -2,6 +2,69 @@ import pygame
 import time
 import os
 from piezas import pieza, Figura
+class Galleta:
+    def __init__(self, peso, beneficio):
+        self.peso = peso
+        self.beneficio = beneficio
+
+class Mochila:
+    def __init__(self, peso_maximo, galletas):
+        self.peso_maximo = peso_maximo
+        self.galletas = galletas
+        self.tabla = [[-1] * (peso_maximo + 1) for _ in range(len(galletas) + 1)]
+
+    def resolver_mochila(self):
+        for i in range(len(self.galletas) + 1):
+            for j in range(self.peso_maximo + 1):
+                if i == 0 or j == 0:
+                    self.tabla[i][j] = 0
+                elif self.galletas[i-1].peso <= j:
+                    self.tabla[i][j] = max(
+                        self.galletas[i-1].beneficio + self.tabla[i-1][j-self.galletas[i-1].peso],
+                        self.tabla[i-1][j]
+                    )
+                else:
+                    self.tabla[i][j] = self.tabla[i-1][j]
+
+    def obtener_configuracion_optima(self):
+        i = len(self.galletas)
+        j = self.peso_maximo
+        configuracion_optima = []
+        while i > 0 and j > 0:
+            if self.galletas[i-1].peso <= j and self.tabla[i][j] != self.tabla[i-1][j]:
+                configuracion_optima.append(self.galletas[i-1])
+                j -= self.galletas[i-1].peso
+            i -= 1
+        return configuracion_optima[::-1]
+# Crear galletas del juego
+galletas = [
+    Galleta(1, 4),
+    Galleta(2, 2),
+    Galleta(4, 6),
+]
+# Crear una mochila de ejemplo
+mochila = Mochila(3, galletas)
+pesomaximo=0
+Beneficio=0
+# Resolver el problema de la mochila utilizando programación dinámica
+mochila.resolver_mochila()
+
+# Obtener la configuración óptima de la mochila
+configuracion_optima = mochila.obtener_configuracion_optima()
+print()
+# Mostrar la configuración óptima en la consola
+for galleta in configuracion_optima:
+    print(f"Galleta: Peso={galleta.peso}, Beneficio={galleta.beneficio}")
+    pesomaximo+=galleta.peso
+    Beneficio+=galleta.beneficio
+print(pesomaximo)
+print(Beneficio)
+# Resolver el problema de la mochila utilizando programación dinámica
+
+
+# Imprimir la tabla
+for row in mochila.tabla:
+    print(row)
 
 pygame.init()
 
@@ -191,7 +254,7 @@ personaje_x = 30
 personaje_y = 850
 
 # Velocidad de movimiento del personaje
-velocidad = 0.6
+velocidad = 3
 
 # Crear una lista de piezas
 piezas = [
@@ -253,7 +316,7 @@ cookies = [
     pieza("ventana", AMARILLO, Figura("circulo", (600, 200), (20, 0))),
     pieza("ventana", AMARILLO, Figura("circulo", (800, 700), (20, 0))),
     pieza("ventana", AMARILLO, Figura("circulo", (900, 200), (20, 0))),]
-
+aspiradora_image = pygame.image.load('./assets/aspiradora2.png')
 aspiradora1 = pieza("bloque", CAFE, Figura("rectangulo", (600, 300), (50, 50)))
 aspiradora2 = pieza("bloque", CAFE, Figura("rectangulo", (700, 300), (50, 50)))
 aspiradora3 = pieza("bloque", CAFE, Figura("rectangulo", (700, 740), (50, 50)))
@@ -264,12 +327,12 @@ FPS = 0.5
 bg_surf = pygame.image.load('./assets/map2.png').convert()
 bg_surf = pygame.transform.scale(bg_surf, (ancho, alto))
 imagen_cookie_original = pygame.image.load('./assets/cookie.png')
-
+aspiradora_image = pygame.image.load('./assets/aspiradora2.png')
 #imagen del personaje
 personaje_imagen = pygame.image.load("./assets/cat2.png")
 personaje_imagen = pygame.transform.scale(personaje_imagen, (personaje_ancho, personaje_alto))
 # Configurar tiempo límite
-tiempo_limite = 30
+tiempo_limite = 45
 tiempo_inicio = time.time()
 
 # Bucle principal del juego
@@ -281,6 +344,9 @@ while ejecutando:
         if evento.type == pygame.QUIT:
             ejecutando = False
 
+    #ventana.blit(aspiradora_image, (posicion_aspiradora2,aspiradora2.figura.posicion))
+    #ventana.blit(aspiradora_image, (posicion_aspiradora3,aspiradora3.figura.posicion))
+    #ventana.blit(aspiradora_image, (posicion_aspiradora4,aspiradora4.figura.posicion))
     # Obtener el estado de las teclas
     teclas = pygame.key.get_pressed()
 
@@ -333,9 +399,11 @@ while ejecutando:
         # Mostrar mensaje de resultado
         ventana.fill(blanco)
         if tiempo_restante <= 0:
-            mensaje_perdiste = fuente.render("¡Perdiste el juego!", True, negro)
+            mensaje_perdiste = fuente.render(f"¡Perdiste el juego!", True, negro)
+
             ventana.blit(mensaje_perdiste, (
                 ancho // 2 - mensaje_perdiste.get_width() // 2, alto // 2 - mensaje_perdiste.get_height() // 2))
+
 
         pygame.display.flip()
 
@@ -357,9 +425,11 @@ while ejecutando:
             ventana.blit(mensaje_perdiste, (
             ancho // 2 - mensaje_perdiste.get_width() // 2, alto // 2 - mensaje_perdiste.get_height() // 2))
         else:
-            mensaje_ganaste = fuente.render("¡Has ganado!", True, negro)
-            ventana.blit(mensaje_ganaste,
-                         (ancho // 2 - mensaje_ganaste.get_width() // 2, alto // 2 - mensaje_ganaste.get_height() // 2))
+            mensaje_0 = fuente.render(f"Peso máximo de la mochila: {pesomaximo}", True, negro)
+            ventana.blit(mensaje_0, (ancho // 2 - mensaje_0.get_width() // 2, alto // 3 - mensaje_0.get_height() // 3))
+            mensaje_1 = fuente.render(f"Beneficio total: {Beneficio}", True, negro)
+            ventana.blit(mensaje_1, (ancho // 2 - mensaje_1.get_width() // 2, alto // 2 - mensaje_1.get_height() // 2))
+
 
         pygame.display.flip()
 
@@ -386,7 +456,7 @@ while ejecutando:
             ventana.blit(imagen_cookie, (p.figura.posicion[0] - p.figura.dimensiones[0], p.figura.posicion[1] - p.figura.dimensiones[0]))
         else:
             p.dibujar(ventana)
-
+    galletas = len(cookies)
 
     posicion_aspiradora1 = list(aspiradora1.figura.posicion)
     posicion_aspiradora2 = list(aspiradora2.figura.posicion)
@@ -443,17 +513,21 @@ while ejecutando:
     if switch_asp4 == "der4":
         posicion_aspiradora4[0] += FPS
     aspiradora4.figura.posicion = tuple(posicion_aspiradora4)
-
+    # Mostrar mensaje "GALLETAS"
+    fuente = pygame.font.Font(None, 36)
+    mensaje = fuente.render("GALLETAS:  " + str(galletas), True, (0, 0, 0))
+    ventana.blit(mensaje, (900, 30 - mensaje.get_height() // 2))
 
     colision_asp(personaje_x, personaje_y, personaje_ancho, personaje_alto, aspiradora1)
     colision_asp(personaje_x, personaje_y, personaje_ancho, personaje_alto, aspiradora2)
     colision_asp(personaje_x, personaje_y, personaje_ancho, personaje_alto, aspiradora3)
     colision_asp(personaje_x, personaje_y, personaje_ancho, personaje_alto, aspiradora4)
 
-    aspiradora1.dibujar(ventana)
-    aspiradora2.dibujar(ventana)
-    aspiradora3.dibujar(ventana)
-    aspiradora4.dibujar(ventana)
+    #aspiradoras
+    ventana.blit(aspiradora_image, aspiradora1.figura.posicion)
+    ventana.blit(aspiradora_image, aspiradora2.figura.posicion)
+    ventana.blit(aspiradora_image, aspiradora3.figura.posicion)
+    ventana.blit(aspiradora_image, aspiradora4.figura.posicion)
     # # Actualizar la ventana
     pygame.display.flip()
 

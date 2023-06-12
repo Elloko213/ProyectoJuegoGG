@@ -49,7 +49,10 @@ radio_circulo = 50
 # Configurar tiempo límite
 tiempo_limite = 30
 tiempo_inicio = time.time()
-gato=pygame.image.load('./assets/cat2.png')
+
+#imagen del personaje
+personaje_imagen = pygame.image.load("./assets/cat2.png")
+personaje_imagen = pygame.transform.scale(personaje_imagen, (ancho_rectangulo, alto_rectangulo))
 ejecutando = True
 while ejecutando:
     for evento in pygame.event.get():
@@ -142,12 +145,13 @@ while ejecutando:
         ejecutando = False  # Terminar el programa
 
     ventana.fill(blanco)
-    pygame.draw.rect(ventana, negro, (posicion_x_rectangulo, posicion_y_rectangulo, ancho_rectangulo, alto_rectangulo))
+    #pygame.draw.rect(ventana, negro, (posicion_x_rectangulo, posicion_y_rectangulo, ancho_rectangulo, alto_rectangulo))
+    ventana.blit(personaje_imagen, (posicion_x_rectangulo, posicion_y_rectangulo))
     pygame.draw.rect(ventana, negro, (posicion_x_bloque1, posicion_y_bloque1, ancho_bloque1, alto_bloque1))
     pygame.draw.rect(ventana, negro, (posicion_x_bloque2, posicion_y_bloque2, ancho_bloque2, alto_bloque2))
     pygame.draw.rect(ventana, negro, (posicion_x_bloque3, posicion_y_bloque3, ancho_bloque3, alto_bloque3))
     pygame.draw.circle(ventana, amarillo, (posicion_x_circulo, posicion_y_circulo), radio_circulo)
-    
+
 
     # Mostrar tiempo restante en la ventana
     fuente = pygame.font.Font(None, 36)
@@ -157,14 +161,14 @@ while ejecutando:
     pygame.display.flip()
 
 # Mostrar mensaje de resultado
-ventana.fill(blanco)
+    ventana.fill(blanco)
 if tiempo_restante <= 0:
     mensaje_perdiste = fuente.render("¡Perdiste el juego!", True, negro)
     ventana.blit(mensaje_perdiste, (ancho // 2 - mensaje_perdiste.get_width() // 2, alto // 2 - mensaje_perdiste.get_height() // 2))
 else:
     mensaje_ganaste = fuente.render("¡Has ganado!", True, negro)
     ventana.blit(mensaje_ganaste, (ancho // 2 - mensaje_ganaste.get_width() // 2, alto // 2 - mensaje_ganaste.get_height() // 2))
-gato.pygame.draw(ventana)
+
 pygame.display.flip()
 
 time.sleep(2)  # Mostrar el mensaje de resultado durante 2 segundos

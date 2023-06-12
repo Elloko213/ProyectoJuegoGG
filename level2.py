@@ -18,9 +18,9 @@ def colision_asp(personaje_x, personaje_y, personaje_ancho, personaje_alto, aspi
                 and personaje_y < y_aspiradora + alto_aspiradora
                     and personaje_y + personaje_alto > y_aspiradora):
                 # Mostrar mensaje de resultado
-                ventana.fill(blanco)
+                screen.fill(blanco)
                 mensaje_perdiste = fuente.render("¡Perdiste el juego!", True, negro)
-                ventana.blit(mensaje_perdiste, (
+                screen.blit(mensaje_perdiste, (
                         ancho // 2 - mensaje_perdiste.get_width() // 2, alto // 2 - mensaje_perdiste.get_height() // 2))
 
                 pygame.display.flip()
@@ -270,6 +270,8 @@ imagen_cookie_original = pygame.image.load('./assets/cookie.png')
 #imagen del personaje
 personaje_imagen = pygame.image.load("./assets/cat2.png")
 personaje_imagen = pygame.transform.scale(personaje_imagen, (personaje_ancho, personaje_alto))
+#imagen de la aspiradora
+aspiradora_image = pygame.image.load('./assets/aspiradora2.png')
 # Configurar tiempo límite
 tiempo_limite = 30
 tiempo_inicio = time.time()
@@ -446,11 +448,10 @@ while ejecutando:
     colision_asp(personaje_x, personaje_y, personaje_ancho, personaje_alto, aspiradora3)
     colision_asp(personaje_x, personaje_y, personaje_ancho, personaje_alto, aspiradora4)
 
-
-    aspiradora1.dibujar(screen)
-    aspiradora2.dibujar(screen)
-    aspiradora3.dibujar(screen)
-    aspiradora4.dibujar(screen)
+    screen.blit(aspiradora_image, aspiradora1.figura.posicion)
+    screen.blit(aspiradora_image, aspiradora2.figura.posicion)
+    screen.blit(aspiradora_image, aspiradora3.figura.posicion)
+    screen.blit(aspiradora_image, aspiradora4.figura.posicion)
 
     pygame.display.flip()
 
